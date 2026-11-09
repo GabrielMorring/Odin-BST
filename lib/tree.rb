@@ -30,6 +30,35 @@ class Tree
     nil
   end
 
+  def height(value)
+    node = get_node(value)
+
+    return nil if node.nil?
+    return 0 if node.leaf_node?
+
+    left_height = node.left_child.nil? ? 0 : height(node.left_child.value)
+    right_height = node.left_child.nil? ? 0 : height(node.right_child.value)
+
+    1 + [left_height, right_height].max
+  end
+
+  def balanced?(node = @root)
+    left_node = node.left_child
+    right_node = node.right_child
+
+    return true if node.leaf_node?
+    return true if left_node.nil? && right_node.leaf_node?
+    return true if right_node.nil? && left_node.leaf_node?
+    return false if right_node.nil? || left_node.nil?
+
+    return false unless (height(left_node.value) - height(right_node.value)).abs < 2
+
+    return false unless balanced?(left_node)
+    return false unless balanced?(right_node)
+
+    true
+  end
+
   def delete(value)
     arr = []
     inorder { |num| arr.push(num) }
